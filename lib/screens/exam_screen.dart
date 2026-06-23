@@ -54,20 +54,27 @@ class _ExamScreenState extends State<ExamScreen> {
       ),
 
       body: Padding(
+  padding: const EdgeInsets.all(20),
 
-        padding: const EdgeInsets.all(20),
+  child: Column(
+    children: [
 
-        child: Column(
+      Text(
+        "Pregunta ${currentQuestion + 1} de ${questions.length}",
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
 
-          children: [
+      const SizedBox(height: 20),
 
-            Text(
-              question.question,
-              style: const TextStyle(
-                fontSize: 22,
-              ),
-            ),
-
+      Text(
+        question.question,
+        style: const TextStyle(
+          fontSize: 22,
+        ),
+      ),
             const SizedBox(height: 20),
 
             ...question.options.asMap().entries.map(

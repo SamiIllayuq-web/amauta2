@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
-
+import '../widgets/bottom_nav.dart';
 class CatalogScreen extends StatelessWidget {
   const CatalogScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      bottomNavigationBar:
+    const BottomNav(
+      currentIndex: 1,
+),
+  
       appBar: AppBar(
         title: const Text("Catálogo"),
       ),

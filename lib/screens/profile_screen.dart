@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/bottom_nav.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -7,6 +8,11 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+
+      bottomNavigationBar:
+    const BottomNav(
+      currentIndex: 3,
+),
 
       appBar: AppBar(
         title: const Text("Perfil"),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../widgets/bottom_nav.dart';
+import '../widgets/bottom_nav.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -8,6 +10,11 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+
+      bottomNavigationBar:
+    const BottomNav(
+      currentIndex: 0,
+),
 
       appBar: AppBar(
         title: const Text("Inicio"),
@@ -30,5 +37,6 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+    
   }
 }

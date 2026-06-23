@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../widgets/bottom_nav.dart';
+import '../services/storage_service.dart';
 
 class ProgressScreen extends StatelessWidget {
 
@@ -9,19 +11,46 @@ class ProgressScreen extends StatelessWidget {
 
     return Scaffold(
 
+      bottomNavigationBar:
+    const BottomNav(
+      currentIndex: 2,
+),
+
       appBar: AppBar(
         title: const Text("Progreso"),
       ),
 
-      body: const Center(
+      body: ListView.builder(
 
-        child: Text(
-          "Historial de simulacros",
-          style: TextStyle(
-            fontSize: 22,
-          ),
+  itemCount:
+      StorageService.history.length,
+
+  itemBuilder: (context, index) {
+
+    final item =
+        StorageService.history[index];
+
+    return Card(
+
+      margin:
+          const EdgeInsets.all(10),
+
+      child: ListTile(
+
+        leading: const Icon(
+          Icons.school,
         ),
+
+        title:
+            Text("Puntaje: ${item.score}"),
+
+        subtitle:
+            Text(item.date.toString()),
       ),
+    );
+  },
+),
+
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../models/result.dart';
+import '../services/storage_service.dart';
 
 class ResultScreen extends StatelessWidget {
 
@@ -10,6 +12,13 @@ class ResultScreen extends StatelessWidget {
     final score =
         ModalRoute.of(context)!
         .settings.arguments as int;
+
+        StorageService.saveResult(
+  Result(
+    score: score,
+    date: DateTime.now(),
+  ),
+);
 
     return Scaffold(
 
