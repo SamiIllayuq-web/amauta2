@@ -1,20 +1,44 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottom_nav.dart';
-import '../services/storage_service.dart';
 
-class ProgressScreen extends StatelessWidget {
+import '../services/preferences_service.dart';
+import '../widgets/bottom_nav.dart';
+
+class ProgressScreen
+    extends StatefulWidget {
 
   const ProgressScreen({super.key});
+
+  @override
+  State<ProgressScreen> createState() =>
+      _ProgressScreenState();
+}
+
+class _ProgressScreenState
+    extends State<ProgressScreen> {
+
+  List<String> history = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+
+    final data =
+        await PreferencesService
+            .loadHistory();
+
+    setState(() {
+      history = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-
-      bottomNavigationBar:
-    const BottomNav(
-      currentIndex: 2,
-),
 
       appBar: AppBar(
         title: const Text("Progreso"),
@@ -22,35 +46,31 @@ class ProgressScreen extends StatelessWidget {
 
       body: ListView.builder(
 
-  itemCount:
-      StorageService.history.length,
+        itemCount: history.length,
 
-  itemBuilder: (context, index) {
+        itemBuilder:
+            (context, index) {
 
-    final item =
-        StorageService.history[index];
+          return Card(
 
-    return Card(
+            child: ListTile(
 
-      margin:
-          const EdgeInsets.all(10),
+              leading: const Icon(
+                Icons.school,
+              ),
 
-      child: ListTile(
-
-        leading: const Icon(
-          Icons.school,
-        ),
-
-        title:
-            Text("Puntaje: ${item.score}"),
-
-        subtitle:
-            Text(item.date.toString()),
+              title: Text(
+                history[index],
+              ),
+            ),
+          );
+        },
       ),
-    );
-  },
-),
 
+      bottomNavigationBar:
+          const BottomNav(
+        currentIndex: 2,
+      ),
     );
   }
 }

@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
 import '../models/result.dart';
 import '../services/storage_service.dart';
+import '../services/preferences_service.dart';
 
 class ResultScreen extends StatelessWidget {
+
+
+  Future<void> saveResult(
+  int score,
+) async {
+
+  final history =
+      await PreferencesService
+          .loadHistory();
+
+  history.add(
+    "Puntaje: $score - ${DateTime.now()}",
+  );
+
+  await PreferencesService
+      .saveHistory(history);
+}
 
   const ResultScreen({super.key});
 
@@ -13,13 +31,9 @@ class ResultScreen extends StatelessWidget {
         ModalRoute.of(context)!
         .settings.arguments as int;
 
-        StorageService.saveResult(
-  Result(
-    score: score,
-    date: DateTime.now(),
-  ),
-);
+        saveResult(score);
 
+        
     return Scaffold(
 
       appBar: AppBar(
