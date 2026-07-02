@@ -9,6 +9,7 @@ import 'screens/result_screen.dart';
 import 'screens/progress_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/profile_screen.dart';
+import 'theme/app_theme.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme(),
       title: 'ADMISION AMAUTA',
       initialRoute: '/',
       routes: {
