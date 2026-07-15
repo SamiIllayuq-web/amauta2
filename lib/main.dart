@@ -1,40 +1,88 @@
+/// ===============================================================
+/// PROYECTO : ADMISIÓN AMAUTA
+/// ARCHIVO  : main.dart
+///
+/// DESCRIPCIÓN:
+/// Punto de entrada principal de la aplicación.
+/// Inicializa Flutter, la base de datos SQLite y ejecuta
+/// la aplicación.
+/// ===============================================================
+
 import 'package:flutter/material.dart';
+
+import 'database/database_helper.dart';
 
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/catalog_screen.dart';
-
 import 'screens/exam_screen.dart';
 import 'screens/result_screen.dart';
 import 'screens/progress_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/profile_screen.dart';
+
 import 'theme/app_theme.dart';
-void main() {
+
+// ==========================================================
+// Punto de entrada de la aplicación.
+// ==========================================================
+
+Future<void> main() async {
+
+  // Permite ejecutar código asíncrono antes de iniciar Flutter.
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializa la base de datos SQLite.
+  await DatabaseHelper.instance.database;
+
+  // Inicia la aplicación.
   runApp(const MyApp());
+
 }
 
+// ==========================================================
+// Widget principal de la aplicación.
+// ==========================================================
+
 class MyApp extends StatelessWidget {
+
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
+
+      title: 'ADMISIÓN AMAUTA',
+
       theme: AppTheme.lightTheme(),
-      title: 'ADMISION AMAUTA',
+
       initialRoute: '/',
+
       routes: {
-        '/register': (context) => const RegisterScreen(),
-        '/profile': (context) => const ProfileScreen(),         
-        '/exam': (context) => const ExamScreen(),
-        '/result': (context) => const ResultScreen(),
-        '/progress': (context) => const ProgressScreen(),
 
         '/': (context) => const LoginScreen(),
+
+        '/register': (context) => const RegisterScreen(),
+
         '/home': (context) => const HomeScreen(),
+
         '/catalog': (context) => const CatalogScreen(),
+
+        '/exam': (context) => const ExamScreen(),
+
+        '/result': (context) => const ResultScreen(),
+
+        '/progress': (context) => const ProgressScreen(),
+
+        '/profile': (context) => const ProfileScreen(),
+
       },
+
     );
+
   }
+
 }
