@@ -1,4 +1,4 @@
-import '../models/result.dart';
+import '../models/result_model.dart';
 
 class StorageService {
 

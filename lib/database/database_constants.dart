@@ -72,9 +72,7 @@ class DBConstants {
   static const String totalQuestions = 'total_questions';
 
   // Llaves foráneas
-  static const String universityIdFk = 'university_id';
-  static const String areaIdFk = 'area_id';
-
+  
   // ==========================================================
   // Tabla: Questions
   // ==========================================================
@@ -85,7 +83,7 @@ class DBConstants {
   static const String questionText = 'question_text';
   static const String image = 'image';
   static const String questionScore = 'question_score';
-  static const String mockExamIdFk = 'mock_exam_id';
+  static const String explanation = 'explanation';
 
   // ==========================================================
   // Tabla: Alternatives
@@ -96,8 +94,6 @@ class DBConstants {
   static const String alternativeId = 'alternative_id';
   static const String alternativeText = 'alternative_text';
   static const String isCorrect = 'is_correct';
-  static const String questionIdFk = 'question_id';
-
   // ==========================================================
   // Tabla: Results
   // ==========================================================
@@ -110,10 +106,9 @@ class DBConstants {
   static const String finalScore = 'final_score';
   static const String elapsedTime = 'elapsed_time';
   static const String completedAt = 'completed_at';
+       
 
-  static const String userIdFk = 'user_id';
-  static const String mockExamIdResultFk = 'mock_exam_id';
-
+       
   // ==========================================================
   // Tabla: User Answers
   // ==========================================================
@@ -121,7 +116,22 @@ class DBConstants {
   static const String userAnswersTable = 'user_answers';
 
   static const String userAnswerId = 'user_answer_id';
-  static const String resultIdFk = 'result_id';
-  static const String questionIdResultFk = 'question_id';
-  static const String alternativeIdFk = 'alternative_id';
+
+  // ==========================================================
+// Foreign Keys (Llaves Foráneas)
+// ==========================================================
+
+static const String userIdFk = 'user_id';
+
+static const String universityIdFk = 'university_id';
+
+static const String areaIdFk = 'area_id';
+
+static const String mockExamIdFk = 'mock_exam_id';
+
+static const String questionIdFk = 'question_id';
+
+static const String alternativeIdFk = 'alternative_id';
+
+static const String resultIdFk = 'result_id';
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../services/preferences_service.dart';
 import '../widgets/bottom_nav.dart';
+import '../models/result_model.dart';
+import '../repositories/result_repository.dart';
+import '../services/preferences_service.dart';
 
 class ProgressScreen
     extends StatefulWidget {
@@ -16,7 +18,18 @@ class ProgressScreen
 class _ProgressScreenState
     extends State<ProgressScreen> {
 
-  List<String> history = [];
+  // ==========================================================
+// Resultados del usuario.
+// ==========================================================
+
+List<Result> results = [];
+
+// ==========================================================
+// Repositorio.
+// ==========================================================
+
+final ResultRepository repository =
+    ResultRepository();
 
   @override
   void initState() {
@@ -24,16 +37,33 @@ class _ProgressScreenState
     loadData();
   }
 
-  Future<void> loadData() async {
+  // ==========================================================
+// Cargar resultados del usuario autenticado.
+// ==========================================================
 
-    final data =
-        await PreferencesService
-            .loadHistory();
+Future<void> loadData() async {
 
-    setState(() {
-      history = data;
-    });
+  final int? userId =
+
+      await PreferencesService.loadUserId();
+
+  if (userId == null) {
+
+    return;
+
   }
+
+  final data =
+
+      await repository.getResultsByUser(userId);
+
+  setState(() {
+
+    results = data;
+
+  });
+
+}
 
   @override
   Widget build(BuildContext context) {
@@ -46,24 +76,53 @@ class _ProgressScreenState
 
       body: ListView.builder(
 
-        itemCount: history.length,
+       itemCount: results.length,
 
         itemBuilder:
             (context, index) {
 
           return Card(
 
-            child: ListTile(
+  margin: const EdgeInsets.symmetric(
 
-              leading: const Icon(
-                Icons.school,
-              ),
+    horizontal: 12,
 
-              title: Text(
-                history[index],
-              ),
-            ),
-          );
+    vertical: 6,
+
+  ),
+
+  child: ListTile(
+
+    leading: const Icon(
+
+      Icons.school,
+
+    ),
+
+    title: Text(
+
+      "Puntaje: ${results[index].finalScore}",
+
+    ),
+
+    subtitle: Text(
+
+      "Correctas: ${results[index].correctAnswers}"
+
+      "\nIncorrectas: ${results[index].incorrectAnswers}",
+
+    ),
+
+    trailing: Text(
+
+      results[index].completedAt
+          .substring(0, 10),
+
+    ),
+
+  ),
+
+);
         },
       ),
 

@@ -1,45 +1,148 @@
 import 'package:flutter/material.dart';
 
+import '../models/user_model.dart';
+import '../repositories/user_repository.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() =>
-      _RegisterScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState
-    extends State<RegisterScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
 
-  final nombreController =
+  // ==========================================================
+  // Controladores de los campos del formulario
+  // ==========================================================
+
+  final TextEditingController firstNameController =
       TextEditingController();
 
-  final correoController =
+  final TextEditingController lastNameController =
       TextEditingController();
 
-  final claveController =
+  final TextEditingController emailController =
       TextEditingController();
 
-  void registrar() {
+  final TextEditingController passwordController =
+      TextEditingController();
+
+  // ==========================================================
+  // Repositorio de usuarios
+  // ==========================================================
+
+  final UserRepository userRepository =
+      UserRepository();
+
+  // ==========================================================
+  // Registra un nuevo usuario en SQLite
+  // ==========================================================
+
+  Future<void> register() async {
 
     if (
-      nombreController.text.isEmpty ||
-      correoController.text.isEmpty ||
-      claveController.text.isEmpty
+
+      firstNameController.text.trim().isEmpty ||
+
+      lastNameController.text.trim().isEmpty ||
+
+      emailController.text.trim().isEmpty ||
+
+      passwordController.text.trim().isEmpty
+
     ) {
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
+
         const SnackBar(
-          content:
-              Text("Complete todos los campos"),
+
+          content: Text(
+            "Complete all fields",
+          ),
+
         ),
+
       );
 
       return;
+
     }
 
+    // ============================================
+    // Verifica si el correo ya existe
+    // ============================================
+
+    final existingUser =
+        await userRepository.getUserByEmail(
+
+      emailController.text.trim(),
+
+    );
+
+    if (existingUser != null) {
+
+      ScaffoldMessenger.of(context).showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Email already registered",
+          ),
+
+        ),
+
+      );
+
+      return;
+
+    }
+
+    // ============================================
+    // Crea el objeto User
+    // ============================================
+
+    final User user = User(
+
+      firstName:
+          firstNameController.text.trim(),
+
+      lastName:
+          lastNameController.text.trim(),
+
+      email:
+          emailController.text.trim(),
+
+      password:
+          passwordController.text.trim(),
+
+      createdAt:
+          DateTime.now().toIso8601String(),
+
+    );
+
+    // ============================================
+    // Guarda en SQLite
+    // ============================================
+
+    await userRepository.createUser(user);
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+
+      const SnackBar(
+
+        content: Text(
+          "Account created successfully",
+        ),
+
+      ),
+
+    );
+
     Navigator.pop(context);
+
   }
 
   @override
@@ -48,50 +151,120 @@ class _RegisterScreenState
     return Scaffold(
 
       appBar: AppBar(
-        title: const Text("Registro"),
+
+        title: const Text(
+          "Register",
+        ),
+
       ),
 
       body: Padding(
+
         padding: const EdgeInsets.all(20),
 
         child: Column(
+
           children: [
 
             TextField(
-              controller: nombreController,
-              decoration:
-                  const InputDecoration(
-                labelText: "Nombre",
+
+              controller: firstNameController,
+
+              decoration: const InputDecoration(
+
+                labelText: "First Name",
+
               ),
+
             ),
 
-            TextField(
-              controller: correoController,
-              decoration:
-                  const InputDecoration(
-                labelText: "Correo",
-              ),
-            ),
+            const SizedBox(height: 12),
 
             TextField(
-              controller: claveController,
+
+              controller: lastNameController,
+
+              decoration: const InputDecoration(
+
+                labelText: "Last Name",
+
+              ),
+
+            ),
+
+            const SizedBox(height: 12),
+
+            TextField(
+
+              controller: emailController,
+
+              decoration: const InputDecoration(
+
+                labelText: "Email",
+
+              ),
+
+            ),
+
+            const SizedBox(height: 12),
+
+            TextField(
+
+              controller: passwordController,
+
               obscureText: true,
-              decoration:
-                  const InputDecoration(
-                labelText: "Contraseña",
+
+              decoration: const InputDecoration(
+
+                labelText: "Password",
+
               ),
+
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
 
-            ElevatedButton(
-              onPressed: registrar,
-              child:
-                  const Text("Crear cuenta"),
-            )
+            SizedBox(
+
+              width: double.infinity,
+
+              child: ElevatedButton(
+
+                onPressed: register,
+
+                child: const Text(
+
+                  "Create Account",
+
+                ),
+
+              ),
+
+            ),
+
           ],
+
         ),
+
       ),
+
     );
+
   }
+  
+  @override
+void dispose() {
+
+  firstNameController.dispose();
+
+  lastNameController.dispose();
+
+  emailController.dispose();
+
+  passwordController.dispose();
+
+  super.dispose();
+
+}
+
 }

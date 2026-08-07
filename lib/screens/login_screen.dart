@@ -1,31 +1,159 @@
+/// ===============================================================
+/// PROYECTO : ADMISIÓN AMAUTA
+/// ARCHIVO  : login_screen.dart
+///
+/// DESCRIPCIÓN:
+/// Pantalla encargada de autenticar al usuario.
+///
+/// FLUJO:
+/// 1. Valida que los campos no estén vacíos.
+/// 2. Consulta SQLite mediante UserRepository.
+/// 3. Si existe el usuario:
+///      - Guarda el ID de sesión en SharedPreferences.
+///      - Ingresa al Home.
+/// 4. Si no existe:
+///      - Muestra un mensaje de error.
+/// ===============================================================
+
 import 'package:flutter/material.dart';
 
+import '../repositories/user_repository.dart';
+import '../services/preferences_service.dart';
+
 class LoginScreen extends StatefulWidget {
+
   const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
+
 }
 
 class _LoginScreenState extends State<LoginScreen> {
 
-  final correo = TextEditingController();
-  final clave = TextEditingController();
+  // ==========================================================
+  // Controladores de los TextField
+  // ==========================================================
 
-  void login() {
+  final TextEditingController correo =
+      TextEditingController();
 
-    if(correo.text.isEmpty || clave.text.isEmpty){
+  final TextEditingController clave =
+      TextEditingController();
+
+  // ==========================================================
+  // Repositorio encargado del login en SQLite
+  // ==========================================================
+
+  final UserRepository userRepository =
+      UserRepository();
+
+  // ==========================================================
+  // LOGIN
+  // ==========================================================
+
+  Future<void> login() async {
+
+    // ========================================================
+    // Validar que todos los campos estén completos.
+    // ========================================================
+
+    if (
+
+      correo.text.trim().isEmpty ||
+
+      clave.text.trim().isEmpty
+
+    ) {
 
       ScaffoldMessenger.of(context).showSnackBar(
+
         const SnackBar(
-          content: Text("Complete todos los campos"),
+
+          content: Text(
+            "Complete todos los campos",
+          ),
+
         ),
+
       );
 
       return;
+
     }
 
-    Navigator.pushNamed(context, '/home');
+    // ========================================================
+    // Buscar usuario en SQLite.
+    // ========================================================
+
+    final user = await userRepository.login(
+
+      email: correo.text.trim(),
+
+      password: clave.text.trim(),
+
+    );
+
+    // ========================================================
+    // Si el usuario no existe mostramos un mensaje.
+    // ========================================================
+
+    if (user == null) {
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Correo o contraseña incorrectos",
+          ),
+
+        ),
+
+      );
+
+      return;
+
+    }
+
+    // ========================================================
+    // Guardar el usuario que inició sesión.
+    //
+    // Este ID será utilizado posteriormente por:
+    //
+    // - ResultScreen
+    // - ProgressScreen
+    // - ProfileScreen
+    //
+    // para saber quién está usando la aplicación.
+    // ========================================================
+
+    await PreferencesService.saveUserId(
+
+      user.userId!,
+
+    );
+
+    // ========================================================
+    // Verificar que el widget siga montado.
+    // ========================================================
+
+    if (!mounted) return;
+
+    // ========================================================
+    // Ingresar al Home.
+    // ========================================================
+
+    Navigator.pushReplacementNamed(
+
+      context,
+
+      '/home',
+
+    );
+
   }
 
   @override
@@ -34,56 +162,134 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
 
       appBar: AppBar(
-        title: const Text("ADMISION AMAUTA"),
+
+        title: const Text(
+
+          "ADMISION AMAUTA",
+
+        ),
+
       ),
 
       body: Padding(
+
         padding: const EdgeInsets.all(20),
 
         child: Column(
 
           children: [
 
+            // ==================================================
+            // Campo correo.
+            // ==================================================
+
             TextField(
+
               controller: correo,
+
               decoration: const InputDecoration(
+
                 labelText: "Correo",
+
               ),
+
             ),
+
+            const SizedBox(height: 15),
+
+            // ==================================================
+            // Campo contraseña.
+            // ==================================================
 
             TextField(
+
               controller: clave,
+
               obscureText: true,
+
               decoration: const InputDecoration(
+
                 labelText: "Contraseña",
+
               ),
+
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
 
-            ElevatedButton(
-              onPressed: login,
-              child: const Text("Ingresar"),
+            // ==================================================
+            // Botón Ingresar.
+            // ==================================================
+
+            SizedBox(
+
+              width: double.infinity,
+
+              child: ElevatedButton(
+
+                onPressed: login,
+
+                child: const Text(
+
+                  "Ingresar",
+
+                ),
+
+              ),
+
             ),
+
+            const SizedBox(height: 10),
+
+            // ==================================================
+            // Ir a la pantalla de registro.
+            // ==================================================
+
             TextButton(
 
-        onPressed: () {
+              onPressed: () {
 
-          Navigator.pushNamed(
-               context,
-              '/register',
-               );
+                Navigator.pushNamed(
 
-                  },
+                  context,
 
-      child: const Text(
-          "Crear cuenta",
+                  '/register',
+
+                );
+
+              },
+
+              child: const Text(
+
+                "Crear cuenta",
+
               ),
-              ),
+
+            ),
+
           ],
-          
+
         ),
+
       ),
+
     );
+
   }
+
+  // ==========================================================
+  // Liberar memoria utilizada por los TextEditingController.
+  // ==========================================================
+
+  @override
+  void dispose() {
+
+    correo.dispose();
+
+    clave.dispose();
+
+    super.dispose();
+
+  }
+
 }

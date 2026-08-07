@@ -49,6 +49,8 @@ class BottomNav extends StatelessWidget {
               '/profile',
             );
             break;
+
+          
         }
       },
 
@@ -73,7 +75,10 @@ class BottomNav extends StatelessWidget {
           icon: Icon(Icons.person),
           label: "Perfil",
         ),
+      
       ],
     );
+  
   }
+  
 }

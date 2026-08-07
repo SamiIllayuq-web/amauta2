@@ -26,6 +26,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'database_constants.dart';
+import 'database_seed.dart';
 
 class DatabaseHelper {
   // ==========================================================
@@ -97,6 +98,7 @@ Future<void> _onCreate(
   print('Creando Base de Datos SQLite...');
   print('==============================');
 
+
   await _createUsersTable(database);
   await _createUniversitiesTable(database);
   await _createAreasTable(database);
@@ -105,6 +107,8 @@ Future<void> _onCreate(
   await _createAlternativesTable(database);
   await _createResultsTable(database);
   await _createUserAnswersTable(database);
+
+  await DatabaseSeed.initialize(database);
 
   print('==============================');
   print('Base de Datos creada correctamente');
@@ -267,6 +271,7 @@ Future<void> _createQuestionsTable(Database database) async {
       ${DBConstants.image} TEXT,
 
       ${DBConstants.questionScore} REAL NOT NULL,
+      ${DBConstants.explanation} TEXT,
 
       FOREIGN KEY (${DBConstants.mockExamIdFk})
         REFERENCES ${DBConstants.mockExamsTable}(${DBConstants.mockExamId})
@@ -320,7 +325,7 @@ Future<void> _createResultsTable(Database database) async {
 
       ${DBConstants.userIdFk} INTEGER NOT NULL,
 
-      ${DBConstants.mockExamIdResultFk} INTEGER NOT NULL,
+      ${DBConstants.mockExamIdFk} INTEGER NOT NULL,
 
       ${DBConstants.correctAnswers} INTEGER NOT NULL,
 
@@ -335,7 +340,7 @@ Future<void> _createResultsTable(Database database) async {
       FOREIGN KEY (${DBConstants.userIdFk})
         REFERENCES ${DBConstants.usersTable}(${DBConstants.userId}),
 
-      FOREIGN KEY (${DBConstants.mockExamIdResultFk})
+      FOREIGN KEY (${DBConstants.mockExamIdFk})
         REFERENCES ${DBConstants.mockExamsTable}(${DBConstants.mockExamId})
 
     )
@@ -360,14 +365,14 @@ Future<void> _createUserAnswersTable(Database database) async {
 
       ${DBConstants.resultIdFk} INTEGER NOT NULL,
 
-      ${DBConstants.questionIdResultFk} INTEGER NOT NULL,
+      ${DBConstants.questionIdFk} INTEGER NOT NULL,
 
       ${DBConstants.alternativeIdFk} INTEGER NOT NULL,
 
       FOREIGN KEY (${DBConstants.resultIdFk})
         REFERENCES ${DBConstants.resultsTable}(${DBConstants.resultId}),
 
-      FOREIGN KEY (${DBConstants.questionIdResultFk})
+      FOREIGN KEY (${DBConstants.questionIdFk})
         REFERENCES ${DBConstants.questionsTable}(${DBConstants.questionId}),
 
       FOREIGN KEY (${DBConstants.alternativeIdFk})

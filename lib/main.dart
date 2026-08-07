@@ -33,8 +33,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inicializa la base de datos SQLite.
-  await DatabaseHelper.instance.database;
+print("PASO 1");
 
+await DatabaseHelper.instance.database;
+
+print("PASO 2");
   // Inicia la aplicación.
   runApp(const MyApp());
 
