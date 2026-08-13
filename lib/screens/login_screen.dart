@@ -17,6 +17,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../database/database_constants.dart';
 import '../repositories/user_repository.dart';
 import '../services/preferences_service.dart';
 
@@ -136,6 +137,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     );
 
+    await PreferencesService.saveRole(user.role);
+
     // ========================================================
     // Verificar que el widget siga montado.
     // ========================================================
@@ -143,16 +146,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     // ========================================================
-    // Ingresar al Home.
+    // Redirigir según rol.
     // ========================================================
 
-    Navigator.pushReplacementNamed(
-
-      context,
-
-      '/home',
-
-    );
+    if (user.role == DBConstants.roleAdmin) {
+      Navigator.pushReplacementNamed(context, '/admin');
+    } else {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
 
   }
 
@@ -265,6 +266,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
               ),
 
+            ),
+
+            const SizedBox(height: 5),
+
+            TextButton(
+              onPressed: () => Navigator.pushNamed(context, '/admin/login'),
+              child: const Text("Acceso Admin", style: TextStyle(color: Colors.indigo)),
             ),
 
           ],

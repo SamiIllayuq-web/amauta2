@@ -37,6 +37,11 @@ class DBConstants {
   static const String email = 'email';
   static const String password = 'password';
   static const String createdAt = 'created_at';
+  static const String role = 'role';
+
+  // Roles válidos
+  static const String roleAdmin = 'ADMIN';
+  static const String rolePostulante = 'POSTULANTE';
 
   // ==========================================================
   // Tabla: Universities

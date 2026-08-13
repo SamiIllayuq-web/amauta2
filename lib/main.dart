@@ -13,7 +13,13 @@ import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
 
 import 'screens/login_screen.dart';
+import 'screens/admin_login_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/admin_dashboard_screen.dart';
+import 'screens/admin_postulants_screen.dart';
+import 'screens/admin_exam_manage_screen.dart';
+import 'screens/admin_monitoring_screen.dart';
+import 'screens/admin_exam_ingest_screen.dart';
 import 'screens/catalog_screen.dart';
 import 'screens/exam_screen.dart';
 import 'screens/result_screen.dart';
@@ -68,9 +74,21 @@ class MyApp extends StatelessWidget {
 
         '/': (context) => const LoginScreen(),
 
+        '/admin/login': (context) => const AdminLoginScreen(),
+
         '/register': (context) => const RegisterScreen(),
 
         '/home': (context) => const HomeScreen(),
+
+        '/admin': (context) => const AdminDashboardScreen(),
+
+        '/admin/postulants': (context) => const AdminPostulantsScreen(),
+
+        '/admin/exams': (context) => const AdminExamManageScreen(),
+
+        '/admin/monitoring': (context) => const AdminMonitoringScreen(),
+
+        '/admin/ingest': (context) => const AdminExamIngestScreen(),
 
         '/catalog': (context) => const CatalogScreen(),
 

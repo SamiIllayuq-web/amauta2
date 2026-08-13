@@ -82,4 +82,35 @@ Future<List<Result>> getResultsByUser(
 
   }
 
+  // ==========================================================
+  // Obtiene un resultado por su ID.
+  // ==========================================================
+
+  Future<Result?> getResultById(int id) async {
+    final db = await database;
+    final maps = await db.query(
+      DBConstants.resultsTable,
+      where: '${DBConstants.resultId} = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+    if (maps.isEmpty) return null;
+    return Result.fromMap(maps.first);
+  }
+
+  // ==========================================================
+  // UPDATE
+  // Actualiza un resultado existente (score final + elapsed time).
+  // ==========================================================
+
+  Future<int> updateResult(Result result) async {
+    final db = await database;
+    return await db.update(
+      DBConstants.resultsTable,
+      result.toMap(),
+      where: '${DBConstants.resultId} = ?',
+      whereArgs: [result.resultId],
+    );
+  }
+
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../database/database_constants.dart';
 import '../models/user_model.dart';
 import '../repositories/user_repository.dart';
 
@@ -118,6 +119,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       createdAt:
           DateTime.now().toIso8601String(),
+
+      role: DBConstants.rolePostulante,
 
     );
 

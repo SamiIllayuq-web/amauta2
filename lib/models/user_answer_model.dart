@@ -43,7 +43,9 @@ class UserAnswer {
 
       DBConstants.alternativeIdFk: selectedAlternativeId,
 
-      DBConstants.isCorrect: isCorrect ? 1 : 0,
+      // La columna is_correct no existe en la tabla user_answers.
+      // La correccion se determina en runtime consultando
+      // alternatives.is_correct via JOIN.
 
     };
 
@@ -61,7 +63,9 @@ class UserAnswer {
 
       selectedAlternativeId: map[DBConstants.alternativeIdFk],
 
-      isCorrect: map[DBConstants.isCorrect] == 1,
+      // La columna is_correct no existe en user_answers.
+      // Se calcula en ResultScreen consultando alternatives.is_correct.
+      isCorrect: false,
 
     );
 

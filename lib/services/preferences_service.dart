@@ -25,6 +25,7 @@ class PreferencesService {
 
   // Usuario que inició sesión
   static const String userIdKey = "current_user_id";
+  static const String userRoleKey = "current_user_role";
 
   // ==========================================================
   // HISTORIAL (Temporal)
@@ -126,6 +127,27 @@ class PreferencesService {
       userIdKey,
     );
 
+    await prefs.remove(userRoleKey);
+
+  }
+
+  // ==========================================================
+  // ROL DEL USUARIO
+  // ==========================================================
+
+  static Future<void> saveRole(String role) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(userRoleKey, role);
+  }
+
+  static Future<String?> loadRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(userRoleKey);
+  }
+
+  static Future<void> clearRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(userRoleKey);
   }
 
 }

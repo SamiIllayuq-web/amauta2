@@ -155,7 +155,9 @@ Future<void> _createUsersTable(Database database) async {
 
       ${DBConstants.password} TEXT NOT NULL,
 
-      ${DBConstants.createdAt} TEXT NOT NULL
+      ${DBConstants.createdAt} TEXT NOT NULL,
+
+      ${DBConstants.role} TEXT NOT NULL DEFAULT '${DBConstants.rolePostulante}'
 
     )
 

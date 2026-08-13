@@ -22,6 +22,7 @@ class User {
   final String email;
   final String password;
   final String createdAt;
+  final String role;
 
   // ==========================================================
   // Constructor
@@ -40,6 +41,8 @@ class User {
     required this.password,
 
     required this.createdAt,
+
+    required this.role,
 
   });
 
@@ -63,6 +66,8 @@ class User {
       DBConstants.password: password,
 
       DBConstants.createdAt: createdAt,
+
+      DBConstants.role: role,
 
     };
 
@@ -89,6 +94,8 @@ class User {
 
       createdAt: map[DBConstants.createdAt],
 
+      role: map[DBConstants.role] ?? DBConstants.rolePostulante,
+
     );
 
   }
@@ -99,37 +106,23 @@ class User {
   // ==========================================================
 
   User copyWith({
-
     int? userId,
-
     String? firstName,
-
     String? lastName,
-
     String? email,
-
     String? password,
-
     String? createdAt,
-
+    String? role,
   }) {
-
     return User(
-
       userId: userId ?? this.userId,
-
       firstName: firstName ?? this.firstName,
-
       lastName: lastName ?? this.lastName,
-
       email: email ?? this.email,
-
       password: password ?? this.password,
-
       createdAt: createdAt ?? this.createdAt,
-
+      role: role ?? this.role,
     );
-
   }
 
   // ==========================================================

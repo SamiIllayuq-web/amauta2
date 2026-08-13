@@ -15,6 +15,10 @@ class Question {
   final String questionText;
   final String explanation;
 
+  final double questionScore;
+
+  final String? image;
+
   const Question({
 
     this.questionId,
@@ -24,6 +28,10 @@ class Question {
     required this.questionText,
 
     required this.explanation,
+
+    this.questionScore = 1.0,
+
+    this.image,
 
   });
 
@@ -39,6 +47,10 @@ class Question {
 
       DBConstants.explanation: explanation,
 
+      DBConstants.questionScore: questionScore,
+
+      DBConstants.image: image,
+
     };
 
   }
@@ -53,7 +65,11 @@ class Question {
 
       questionText: map[DBConstants.questionText],
 
-      explanation: map[DBConstants.explanation],
+      explanation: map[DBConstants.explanation] ?? '',
+
+      questionScore: (map[DBConstants.questionScore] ?? 1.0).toDouble(),
+
+      image: map[DBConstants.image],
 
     );
 
@@ -69,6 +85,10 @@ class Question {
 
     String? explanation,
 
+    double? questionScore,
+
+    String? image,
+
   }) {
 
     return Question(
@@ -80,6 +100,10 @@ class Question {
       questionText: questionText ?? this.questionText,
 
       explanation: explanation ?? this.explanation,
+
+      questionScore: questionScore ?? this.questionScore,
+
+      image: image ?? this.image,
 
     );
 

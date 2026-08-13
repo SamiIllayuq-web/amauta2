@@ -43,6 +43,8 @@ class DatabaseSeed {
 
     await _insertAlternatives(database);
 
+    await _insertAdminUser(database);
+
   }
 
 // ==========================================================
@@ -539,5 +541,23 @@ static Future<void> _insertAlternatives(
 
   }
 
+}
+
+// ==========================================================
+// Inserta el usuario administrador inicial.
+// ==========================================================
+
+static Future<void> _insertAdminUser(Database database) async {
+  await database.insert(
+    DBConstants.usersTable,
+    {
+      DBConstants.firstName: 'Admin',
+      DBConstants.lastName: 'Amauta',
+      DBConstants.email: 'kuma@gmail.com',
+      DBConstants.password: 'kuma',
+      DBConstants.createdAt: DateTime.now().toIso8601String(),
+      DBConstants.role: DBConstants.roleAdmin,
+    },
+  );
 }
 }
