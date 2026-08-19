@@ -248,6 +248,7 @@ class _ExamScreenState extends State<ExamScreen> {
       if (!mounted) return;
       Navigator.pushNamed(context, '/result', arguments: {
         "resultId": resultId,
+        "mockExamId": mockExamId,
         "elapsedTime": elapsedSeconds,
       });
     }

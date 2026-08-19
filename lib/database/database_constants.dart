@@ -23,7 +23,7 @@ class DBConstants {
   static const String databaseName = 'admision_amauta.db';
 
   /// Versión de la base de datos.
-  static const int databaseVersion = 1;
+  static const int databaseVersion = 5;
 
   // ==========================================================
   // Tabla: Users
@@ -38,8 +38,10 @@ class DBConstants {
   static const String password = 'password';
   static const String createdAt = 'created_at';
   static const String role = 'role';
+  static const String phone = 'phone';
+  static const String bio = 'bio';
 
-  // Roles válidos
+  // Roles validos
   static const String roleAdmin = 'ADMIN';
   static const String rolePostulante = 'POSTULANTE';
 
@@ -89,6 +91,8 @@ class DBConstants {
   static const String image = 'image';
   static const String questionScore = 'question_score';
   static const String explanation = 'explanation';
+  static const String correctAlternativeId = 'correct_alternative_id';
+  static const String aiExplanation = 'ai_explanation';
 
   // ==========================================================
   // Tabla: Alternatives
@@ -138,5 +142,14 @@ static const String questionIdFk = 'question_id';
 
 static const String alternativeIdFk = 'alternative_id';
 
-static const String resultIdFk = 'result_id';
+  static const String resultIdFk = 'result_id';
+
+  // ==========================================================
+  // Tabla: Comments (Fase G)
+  // ==========================================================
+
+  static const String commentsTable = 'comments';
+
+  static const String commentId = 'comment_id';
+  static const String commentContent = 'content';
 }

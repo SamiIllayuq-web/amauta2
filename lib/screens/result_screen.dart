@@ -45,6 +45,8 @@ import '../repositories/user_answer_repository.dart';
 
 import '../services/preferences_service.dart';
 
+import 'ai_review_screen.dart';
+
 class ResultScreen extends StatefulWidget {
 
   const ResultScreen({super.key});
@@ -68,6 +70,8 @@ class _ResultScreenState extends State<ResultScreen> {
   int incorrectAnswers = 0;
   int totalQuestions = 0;
   int finalScore = 0;
+  int? mockExamId;
+  late int resultId;
 
   /// Tiempo total que el postulante uso para completar
   /// el examen, enviado desde ExamScreen.
@@ -113,6 +117,7 @@ class _ResultScreenState extends State<ResultScreen> {
         completedAt: result!.completedAt,
       );
       await repository.updateResult(updated);
+      mockExamId = result!.mockExamId;
     }
 
     if (!mounted) return;
@@ -123,10 +128,16 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget build(BuildContext context) {
     final Map<String, dynamic> arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final int resultId = arguments["resultId"];
+
+    // mockExamId se pasa desde ExamScreen al ResultScreen.
+    // Usado para navegar a AIReviewScreen.
+    final int? passedMockExamId = arguments["mockExamId"];
+
+    // Guardar para usar en navegación y en saveResult.
+    resultId = arguments["resultId"] as int;
+    mockExamId = passedMockExamId;
 
     // Tiempo transcurrido en segundos enviado desde ExamScreen.
-    // Se guardara en la tabla results al actualizar el resultado.
     final int elapsedTime = arguments["elapsedTime"] ?? 0;
 
     if (!initialized) {
@@ -171,7 +182,26 @@ class _ResultScreenState extends State<ResultScreen> {
             const SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AIReviewScreen(
+                        resultId: resultId,
+                        mockExamId: mockExamId!,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.auto_awesome),
+                label: const Text("Revisar con IA"),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
                 onPressed: () => Navigator.pushReplacementNamed(context, '/progress'),
                 child: const Text("Ver progreso"),
               ),

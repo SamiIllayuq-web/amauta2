@@ -1,35 +1,37 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/bottom_nav.dart';
-import '../models/result_model.dart';
+import '../models/result_with_exam_model.dart';
 import '../repositories/result_repository.dart';
 import '../services/preferences_service.dart';
+import '../widgets/bottom_nav.dart';
+import 'ai_review_screen.dart';
 
-class ProgressScreen
-    extends StatefulWidget {
+class ProgressScreen extends StatefulWidget {
 
   const ProgressScreen({super.key});
 
   @override
-  State<ProgressScreen> createState() =>
-      _ProgressScreenState();
+  State<ProgressScreen> createState() => _ProgressScreenState();
+
 }
 
-class _ProgressScreenState
-    extends State<ProgressScreen> {
+class _ProgressScreenState extends State<ProgressScreen> {
 
   // ==========================================================
-// Resultados del usuario.
-// ==========================================================
+  // Resultados con titulo del examen.
+  // ==========================================================
 
-List<Result> results = [];
+  List<ResultWithExam> results = [];
 
-// ==========================================================
-// Repositorio.
-// ==========================================================
+  // ==========================================================
+  // Repositorio.
+  // ==========================================================
 
-final ResultRepository repository =
-    ResultRepository();
+  final ResultRepository repository = ResultRepository();
+
+  // ==========================================================
+  // Lifecycle.
+  // ==========================================================
 
   @override
   void initState() {
@@ -38,32 +40,38 @@ final ResultRepository repository =
   }
 
   // ==========================================================
-// Cargar resultados del usuario autenticado.
-// ==========================================================
+  // Cargar resultados del usuario autenticado.
+  // ==========================================================
 
-Future<void> loadData() async {
+  Future<void> loadData() async {
 
-  final int? userId =
+    final int? userId = await PreferencesService.loadUserId();
 
-      await PreferencesService.loadUserId();
+    if (userId == null) return;
 
-  if (userId == null) {
+    final data = await repository.getResultsByUserWithExam(userId);
 
-    return;
+    setState(() {
+      results = data;
+    });
 
   }
 
-  final data =
+  // ==========================================================
+  // Format elapsed time as MM:SS.
+  // ==========================================================
 
-      await repository.getResultsByUser(userId);
+  String _formatTime(int seconds) {
 
-  setState(() {
+    final mins = seconds ~/ 60;
+    final secs = seconds % 60;
+    return '${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
 
-    results = data;
+  }
 
-  });
-
-}
+  // ==========================================================
+  // Build.
+  // ==========================================================
 
   @override
   Widget build(BuildContext context) {
@@ -74,62 +82,85 @@ Future<void> loadData() async {
         title: const Text("Progreso"),
       ),
 
-      body: ListView.builder(
+      body: results.isEmpty
 
-       itemCount: results.length,
+          ? const Center(
+              child: Text(
+                "Sin resultados todavia.",
+                style: TextStyle(fontSize: 16),
+              ),
+            )
 
-        itemBuilder:
-            (context, index) {
+          : ListView.builder(
+              itemCount: results.length,
+              itemBuilder: (context, index) {
 
-          return Card(
+                final r = results[index];
 
-  margin: const EdgeInsets.symmetric(
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      final rid = r.resultId;
+                      final mid = r.mockExamId;
+                      if (rid == null || mid == null) return;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AIReviewScreen(
+                            resultId: rid,
+                            mockExamId: mid,
+                          ),
+                        ),
+                      );
+                    },
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.green.shade100,
+                        child: Text(
+                          '${r.correctAnswers}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        r.examTitle,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        'Correctas: ${r.correctAnswers}  |  Incorrectas: ${r.incorrectAnswers}\n'
+                        'Tiempo: ${_formatTime(r.elapsedTime)}',
+                      ),
+                      isThreeLine: true,
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            r.completedAt.substring(0, 10),
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(Icons.auto_awesome, size: 16, color: Colors.amber),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
 
-    horizontal: 12,
+              },
+            ),
 
-    vertical: 6,
-
-  ),
-
-  child: ListTile(
-
-    leading: const Icon(
-
-      Icons.school,
-
-    ),
-
-    title: Text(
-
-      "Puntaje: ${results[index].finalScore}",
-
-    ),
-
-    subtitle: Text(
-
-      "Correctas: ${results[index].correctAnswers}"
-
-      "\nIncorrectas: ${results[index].incorrectAnswers}",
-
-    ),
-
-    trailing: Text(
-
-      results[index].completedAt
-          .substring(0, 10),
-
-    ),
-
-  ),
-
-);
-        },
-      ),
-
-      bottomNavigationBar:
-          const BottomNav(
+      bottomNavigationBar: const BottomNav(
         currentIndex: 2,
       ),
+
     );
+
   }
+
 }

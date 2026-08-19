@@ -9,6 +9,7 @@
 /// ===============================================================
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'database/database_helper.dart';
 
@@ -20,12 +21,15 @@ import 'screens/admin_postulants_screen.dart';
 import 'screens/admin_exam_manage_screen.dart';
 import 'screens/admin_monitoring_screen.dart';
 import 'screens/admin_exam_ingest_screen.dart';
+import 'screens/admin_question_analysis_screen.dart';
+import 'screens/ai_review_screen.dart';
 import 'screens/catalog_screen.dart';
 import 'screens/exam_screen.dart';
 import 'screens/result_screen.dart';
 import 'screens/progress_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/comments_screen.dart';
 
 import 'theme/app_theme.dart';
 
@@ -34,17 +38,23 @@ import 'theme/app_theme.dart';
 // ==========================================================
 
 Future<void> main() async {
+  // Carga variables de entorno desde .env (API keys, etc.)
+  await dotenv.load(fileName: ".env");
 
-  // Permite ejecutar código asíncrono antes de iniciar Flutter.
+  // Permite ejecutar codigo asincrono antes de iniciar Flutter.
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inicializa la base de datos SQLite.
-print("PASO 1");
+  print("[MAIN] PASO 1 - DatabaseHelper...");
+  try {
+    final db = await DatabaseHelper.instance.database;
+    print("[MAIN] Database OK: ${db.path}");
+  } catch (e) {
+    print("[MAIN] Database ERROR: $e");
+    rethrow;
+  }
 
-await DatabaseHelper.instance.database;
-
-print("PASO 2");
-  // Inicia la aplicación.
+  print("[MAIN] PASO 2 - runApp...");
   runApp(const MyApp());
 
 }
@@ -90,15 +100,21 @@ class MyApp extends StatelessWidget {
 
         '/admin/ingest': (context) => const AdminExamIngestScreen(),
 
+        '/admin/analyze': (context) => const AdminQuestionAnalysisScreen(),
+
         '/catalog': (context) => const CatalogScreen(),
 
         '/exam': (context) => const ExamScreen(),
 
         '/result': (context) => const ResultScreen(),
 
+        '/ai-review': (context) => const AIReviewScreen(resultId: 0, mockExamId: 0),
+
         '/progress': (context) => const ProgressScreen(),
 
         '/profile': (context) => const ProfileScreen(),
+
+        '/comments': (context) => const CommentsScreen(),
 
       },
 

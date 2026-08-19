@@ -23,6 +23,8 @@ class User {
   final String password;
   final String createdAt;
   final String role;
+  final String? phone;
+  final String? bio;
 
   // ==========================================================
   // Constructor
@@ -43,6 +45,10 @@ class User {
     required this.createdAt,
 
     required this.role,
+
+    this.phone,
+
+    this.bio,
 
   });
 
@@ -68,6 +74,10 @@ class User {
       DBConstants.createdAt: createdAt,
 
       DBConstants.role: role,
+
+      DBConstants.phone: phone,
+
+      DBConstants.bio: bio,
 
     };
 
@@ -96,6 +106,10 @@ class User {
 
       role: map[DBConstants.role] ?? DBConstants.rolePostulante,
 
+      phone: map[DBConstants.phone],
+
+      bio: map[DBConstants.bio],
+
     );
 
   }
@@ -113,6 +127,8 @@ class User {
     String? password,
     String? createdAt,
     String? role,
+    String? phone,
+    String? bio,
   }) {
     return User(
       userId: userId ?? this.userId,
@@ -122,6 +138,8 @@ class User {
       password: password ?? this.password,
       createdAt: createdAt ?? this.createdAt,
       role: role ?? this.role,
+      phone: phone ?? this.phone,
+      bio: bio ?? this.bio,
     );
   }
 

@@ -80,11 +80,6 @@ class DatabaseHelper {
   }
 
   // ==========================================================
-  // Se ejecuta únicamente la primera vez que la aplicación crea
-  // la base de datos.
-  // ==========================================================
-
-  // ==========================================================
 // Se ejecuta únicamente la primera vez que se crea
 // la base de datos.
 // ==========================================================
@@ -107,12 +102,13 @@ Future<void> _onCreate(
   await _createAlternativesTable(database);
   await _createResultsTable(database);
   await _createUserAnswersTable(database);
+  await _createCommentsTable(database);
 
   await DatabaseSeed.initialize(database);
 
   print('==============================');
   print('Base de Datos creada correctamente');
-  print('8 tablas creadas con éxito');
+  print('9 tablas creadas con exito');
   print('==============================');
 
 }
@@ -127,7 +123,28 @@ Future<void> _onCreate(
     int newVersion,
   ) async {
 
-    // Aquí implementaremos futuras migraciones.
+    if (oldVersion < 2) {
+      // Migracion v1 -> v2: agregar phone y bio a users
+      final batch = database.batch();
+      batch.execute('ALTER TABLE ${DBConstants.usersTable} ADD COLUMN ${DBConstants.phone} TEXT');
+      batch.execute('ALTER TABLE ${DBConstants.usersTable} ADD COLUMN ${DBConstants.bio} TEXT');
+      await batch.commit(noResult: true);
+    }
+
+    if (oldVersion < 3) {
+      // Migracion v2 -> v3: crear tabla comments
+      await _createCommentsTable(database);
+    }
+
+    if (oldVersion < 4) {
+      // Migracion v3 -> v4: agregar correct_alternative_id y ai_explanation a questions
+      final batch = database.batch();
+      batch.execute(
+          'ALTER TABLE ${DBConstants.questionsTable} ADD COLUMN ${DBConstants.correctAlternativeId} INTEGER');
+      batch.execute(
+          'ALTER TABLE ${DBConstants.questionsTable} ADD COLUMN ${DBConstants.aiExplanation} TEXT');
+      await batch.commit(noResult: true);
+    }
 
   }
 
@@ -157,7 +174,11 @@ Future<void> _createUsersTable(Database database) async {
 
       ${DBConstants.createdAt} TEXT NOT NULL,
 
-      ${DBConstants.role} TEXT NOT NULL DEFAULT '${DBConstants.rolePostulante}'
+      ${DBConstants.role} TEXT NOT NULL DEFAULT '${DBConstants.rolePostulante}',
+
+      ${DBConstants.phone} TEXT,
+
+      ${DBConstants.bio} TEXT
 
     )
 
@@ -254,6 +275,7 @@ Future<void> _createMockExamsTable(Database database) async {
 
 
 
+
 // ==========================================================
 // Crea la tabla de preguntas.
 // ==========================================================
@@ -274,6 +296,8 @@ Future<void> _createQuestionsTable(Database database) async {
 
       ${DBConstants.questionScore} REAL NOT NULL,
       ${DBConstants.explanation} TEXT,
+      ${DBConstants.correctAlternativeId} INTEGER,
+      ${DBConstants.aiExplanation} TEXT,
 
       FOREIGN KEY (${DBConstants.mockExamIdFk})
         REFERENCES ${DBConstants.mockExamsTable}(${DBConstants.mockExamId})
@@ -310,6 +334,7 @@ Future<void> _createAlternativesTable(Database database) async {
   ''');
 
 }
+
 
 
 
@@ -353,6 +378,7 @@ Future<void> _createResultsTable(Database database) async {
 
 
 
+
 // ==========================================================
 // Crea la tabla de respuestas del usuario.
 // ==========================================================
@@ -389,10 +415,37 @@ Future<void> _createUserAnswersTable(Database database) async {
 
 
 
+// ==========================================================
+// Crea la tabla de comentarios (Fase G).
+// ==========================================================
 
+Future<void> _createCommentsTable(Database database) async {
 
+  await database.execute('''
 
+    CREATE TABLE ${DBConstants.commentsTable}(
 
+      ${DBConstants.commentId} INTEGER PRIMARY KEY AUTOINCREMENT,
+
+      ${DBConstants.userIdFk} INTEGER NOT NULL,
+
+      ${DBConstants.mockExamIdFk} INTEGER,
+
+      ${DBConstants.commentContent} TEXT NOT NULL,
+
+      ${DBConstants.createdAt} TEXT NOT NULL,
+
+      FOREIGN KEY (${DBConstants.userIdFk})
+        REFERENCES ${DBConstants.usersTable}(${DBConstants.userId}),
+
+      FOREIGN KEY (${DBConstants.mockExamIdFk})
+        REFERENCES ${DBConstants.mockExamsTable}(${DBConstants.mockExamId})
+
+    )
+
+  ''');
+
+}
 
 
 

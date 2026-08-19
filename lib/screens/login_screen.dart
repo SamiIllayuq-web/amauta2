@@ -4,15 +4,6 @@
 ///
 /// DESCRIPCIÓN:
 /// Pantalla encargada de autenticar al usuario.
-///
-/// FLUJO:
-/// 1. Valida que los campos no estén vacíos.
-/// 2. Consulta SQLite mediante UserRepository.
-/// 3. Si existe el usuario:
-///      - Guarda el ID de sesión en SharedPreferences.
-///      - Ingresa al Home.
-/// 4. Si no existe:
-///      - Muestra un mensaje de error.
 /// ===============================================================
 
 import 'package:flutter/material.dart';
@@ -32,272 +23,121 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
-  // ==========================================================
-  // Controladores de los TextField
-  // ==========================================================
+  final TextEditingController correo = TextEditingController();
+  final TextEditingController clave = TextEditingController();
 
-  final TextEditingController correo =
-      TextEditingController();
-
-  final TextEditingController clave =
-      TextEditingController();
+  final UserRepository userRepository = UserRepository();
 
   // ==========================================================
-  // Repositorio encargado del login en SQLite
-  // ==========================================================
-
-  final UserRepository userRepository =
-      UserRepository();
-
-  // ==========================================================
-  // LOGIN
+  // LOGIN MANUAL
   // ==========================================================
 
   Future<void> login() async {
 
-    // ========================================================
-    // Validar que todos los campos estén completos.
-    // ========================================================
-
-    if (
-
-      correo.text.trim().isEmpty ||
-
-      clave.text.trim().isEmpty
-
-    ) {
-
+    if (correo.text.trim().isEmpty || clave.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-
-        const SnackBar(
-
-          content: Text(
-            "Complete todos los campos",
-          ),
-
-        ),
-
+        const SnackBar(content: Text("Complete todos los campos")),
       );
-
       return;
-
     }
-
-    // ========================================================
-    // Buscar usuario en SQLite.
-    // ========================================================
 
     final user = await userRepository.login(
-
       email: correo.text.trim(),
-
       password: clave.text.trim(),
-
     );
-
-    // ========================================================
-    // Si el usuario no existe mostramos un mensaje.
-    // ========================================================
 
     if (user == null) {
-
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
-
-        const SnackBar(
-
-          content: Text(
-            "Correo o contraseña incorrectos",
-          ),
-
-        ),
-
+        const SnackBar(content: Text("Correo o contrasena incorrectos")),
       );
-
       return;
-
     }
 
-    // ========================================================
-    // Guardar el usuario que inició sesión.
-    //
-    // Este ID será utilizado posteriormente por:
-    //
-    // - ResultScreen
-    // - ProgressScreen
-    // - ProfileScreen
-    //
-    // para saber quién está usando la aplicación.
-    // ========================================================
-
-    await PreferencesService.saveUserId(
-
-      user.userId!,
-
-    );
-
+    await PreferencesService.saveUserId(user.userId!);
     await PreferencesService.saveRole(user.role);
 
-    // ========================================================
-    // Verificar que el widget siga montado.
-    // ========================================================
-
     if (!mounted) return;
-
-    // ========================================================
-    // Redirigir según rol.
-    // ========================================================
 
     if (user.role == DBConstants.roleAdmin) {
       Navigator.pushReplacementNamed(context, '/admin');
     } else {
       Navigator.pushReplacementNamed(context, '/home');
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
+      appBar: AppBar(title: const Text("ADMISION AMAUTA")),
 
-      appBar: AppBar(
-
-        title: const Text(
-
-          "ADMISION AMAUTA",
-
-        ),
-
-      ),
-
-      body: Padding(
-
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-
         child: Column(
-
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
 
-            // ==================================================
-            // Campo correo.
-            // ==================================================
+            const SizedBox(height: 40),
+
+            // ==============================================
+            // Formulario de login.
+            // ==============================================
 
             TextField(
-
               controller: correo,
-
-              decoration: const InputDecoration(
-
-                labelText: "Correo",
-
-              ),
-
+              decoration: const InputDecoration(labelText: "Correo"),
+              keyboardType: TextInputType.emailAddress,
             ),
 
-            const SizedBox(height: 15),
-
-            // ==================================================
-            // Campo contraseña.
-            // ==================================================
+            const SizedBox(height: 14),
 
             TextField(
-
               controller: clave,
-
               obscureText: true,
-
-              decoration: const InputDecoration(
-
-                labelText: "Contraseña",
-
-              ),
-
+              decoration: const InputDecoration(labelText: "Contrasena"),
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 24),
 
-            // ==================================================
-            // Botón Ingresar.
-            // ==================================================
+            ElevatedButton(
+              onPressed: login,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text("Ingresar", style: TextStyle(fontSize: 16)),
+            ),
 
-            SizedBox(
+            const SizedBox(height: 16),
 
-              width: double.infinity,
+            // ==============================================
+            // Links inferiores.
+            // ==============================================
 
-              child: ElevatedButton(
-
-                onPressed: login,
-
-                child: const Text(
-
-                  "Ingresar",
-
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pushNamed(context, '/register'),
+                  child: const Text("Crear cuenta"),
                 ),
-
-              ),
-
-            ),
-
-            const SizedBox(height: 10),
-
-            // ==================================================
-            // Ir a la pantalla de registro.
-            // ==================================================
-
-            TextButton(
-
-              onPressed: () {
-
-                Navigator.pushNamed(
-
-                  context,
-
-                  '/register',
-
-                );
-
-              },
-
-              child: const Text(
-
-                "Crear cuenta",
-
-              ),
-
-            ),
-
-            const SizedBox(height: 5),
-
-            TextButton(
-              onPressed: () => Navigator.pushNamed(context, '/admin/login'),
-              child: const Text("Acceso Admin", style: TextStyle(color: Colors.indigo)),
+                TextButton(
+                  onPressed: () => Navigator.pushNamed(context, '/admin/login'),
+                  child: const Text("Acceso Admin", style: TextStyle(color: Colors.indigo)),
+                ),
+              ],
             ),
 
           ],
-
         ),
-
       ),
-
     );
-
   }
-
-  // ==========================================================
-  // Liberar memoria utilizada por los TextEditingController.
-  // ==========================================================
 
   @override
   void dispose() {
-
     correo.dispose();
-
     clave.dispose();
-
     super.dispose();
-
   }
-
 }
