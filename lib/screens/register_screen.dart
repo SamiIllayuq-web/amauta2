@@ -13,261 +13,138 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
 
-  // ==========================================================
-  // Controladores de los campos del formulario
-  // ==========================================================
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  final TextEditingController firstNameController =
-      TextEditingController();
-
-  final TextEditingController lastNameController =
-      TextEditingController();
-
-  final TextEditingController emailController =
-      TextEditingController();
-
-  final TextEditingController passwordController =
-      TextEditingController();
+  final UserRepository userRepository = UserRepository();
 
   // ==========================================================
-  // Repositorio de usuarios
-  // ==========================================================
-
-  final UserRepository userRepository =
-      UserRepository();
-
-  // ==========================================================
-  // Registra un nuevo usuario en SQLite
+  // Registro manual.
   // ==========================================================
 
   Future<void> register() async {
 
     if (
-
       firstNameController.text.trim().isEmpty ||
-
       lastNameController.text.trim().isEmpty ||
-
       emailController.text.trim().isEmpty ||
-
       passwordController.text.trim().isEmpty
-
     ) {
-
       ScaffoldMessenger.of(context).showSnackBar(
-
-        const SnackBar(
-
-          content: Text(
-            "Complete all fields",
-          ),
-
-        ),
-
+        const SnackBar(content: Text("Complete todos los campos")),
       );
-
       return;
-
     }
 
-    // ============================================
-    // Verifica si el correo ya existe
-    // ============================================
-
-    final existingUser =
-        await userRepository.getUserByEmail(
-
+    // Check email duplicado (case-insensitive).
+    final existingByEmail = await userRepository.getUserByEmail(
       emailController.text.trim(),
-
     );
 
-    if (existingUser != null) {
-
+    if (existingByEmail != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-
-        const SnackBar(
-
-          content: Text(
-            "Email already registered",
-          ),
-
-        ),
-
+        const SnackBar(content: Text("El email ya esta registrado")),
       );
-
       return;
-
     }
 
-    // ============================================
-    // Crea el objeto User
-    // ============================================
+    // Check nombre+apellido duplicado (case-insensitive).
+    final existingByName = await userRepository.getUserByFullName(
+      firstNameController.text.trim(),
+      lastNameController.text.trim(),
+    );
+
+    if (existingByName != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Este nombre y apellido ya estan registrados")),
+      );
+      return;
+    }
 
     final User user = User(
-
-      firstName:
-          firstNameController.text.trim(),
-
-      lastName:
-          lastNameController.text.trim(),
-
-      email:
-          emailController.text.trim(),
-
-      password:
-          passwordController.text.trim(),
-
-      createdAt:
-          DateTime.now().toIso8601String(),
-
+      firstName: firstNameController.text.trim(),
+      lastName: lastNameController.text.trim(),
+      email: emailController.text.trim().toLowerCase(),
+      password: passwordController.text.trim(),
+      createdAt: DateTime.now().toIso8601String(),
       role: DBConstants.rolePostulante,
-
     );
-
-    // ============================================
-    // Guarda en SQLite
-    // ============================================
 
     await userRepository.createUser(user);
 
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-
-      const SnackBar(
-
-        content: Text(
-          "Account created successfully",
-        ),
-
-      ),
-
+      const SnackBar(content: Text("Cuenta creada exitosamente")),
     );
 
     Navigator.pop(context);
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
-      appBar: AppBar(
-
-        title: const Text(
-          "Register",
-        ),
-
-      ),
-
-      body: Padding(
-
+      appBar: AppBar(title: const Text("Crear cuenta")),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-
         child: Column(
-
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
 
             TextField(
-
               controller: firstNameController,
-
-              decoration: const InputDecoration(
-
-                labelText: "First Name",
-
-              ),
-
+              decoration: const InputDecoration(labelText: "Nombres"),
+              textCapitalization: TextCapitalization.words,
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
 
             TextField(
-
               controller: lastNameController,
-
-              decoration: const InputDecoration(
-
-                labelText: "Last Name",
-
-              ),
-
+              decoration: const InputDecoration(labelText: "Apellidos"),
+              textCapitalization: TextCapitalization.words,
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
 
             TextField(
-
               controller: emailController,
-
-              decoration: const InputDecoration(
-
-                labelText: "Email",
-
-              ),
-
+              decoration: const InputDecoration(labelText: "Correo"),
+              keyboardType: TextInputType.emailAddress,
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
 
             TextField(
-
               controller: passwordController,
-
               obscureText: true,
-
-              decoration: const InputDecoration(
-
-                labelText: "Password",
-
-              ),
-
+              decoration: const InputDecoration(labelText: "Contrasena"),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 28),
 
-            SizedBox(
-
-              width: double.infinity,
-
-              child: ElevatedButton(
-
-                onPressed: register,
-
-                child: const Text(
-
-                  "Create Account",
-
-                ),
-
+            ElevatedButton(
+              onPressed: register,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-
+              child: const Text("Crear cuenta", style: TextStyle(fontSize: 16)),
             ),
 
           ],
-
         ),
-
       ),
-
     );
-
   }
-  
+
   @override
-void dispose() {
-
-  firstNameController.dispose();
-
-  lastNameController.dispose();
-
-  emailController.dispose();
-
-  passwordController.dispose();
-
-  super.dispose();
-
-}
-
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 }

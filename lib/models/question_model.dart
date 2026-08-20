@@ -19,6 +19,13 @@ class Question {
 
   final String? image;
 
+  /// ID de la alternativa correcta. Null significa que aun no
+  /// ha sido analizada con IA.
+  final int? correctAlternativeId;
+
+  /// Breve explicacion de la respuesta correcta, generada por IA.
+  final String? aiExplanation;
+
   const Question({
 
     this.questionId,
@@ -32,6 +39,10 @@ class Question {
     this.questionScore = 1.0,
 
     this.image,
+
+    this.correctAlternativeId,
+
+    this.aiExplanation,
 
   });
 
@@ -50,6 +61,10 @@ class Question {
       DBConstants.questionScore: questionScore,
 
       DBConstants.image: image,
+
+      DBConstants.correctAlternativeId: correctAlternativeId,
+
+      DBConstants.aiExplanation: aiExplanation,
 
     };
 
@@ -71,6 +86,10 @@ class Question {
 
       image: map[DBConstants.image],
 
+      correctAlternativeId: map[DBConstants.correctAlternativeId],
+
+      aiExplanation: map[DBConstants.aiExplanation],
+
     );
 
   }
@@ -89,6 +108,10 @@ class Question {
 
     String? image,
 
+    int? correctAlternativeId,
+
+    String? aiExplanation,
+
   }) {
 
     return Question(
@@ -104,6 +127,10 @@ class Question {
       questionScore: questionScore ?? this.questionScore,
 
       image: image ?? this.image,
+
+      correctAlternativeId: correctAlternativeId ?? this.correctAlternativeId,
+
+      aiExplanation: aiExplanation ?? this.aiExplanation,
 
     );
 

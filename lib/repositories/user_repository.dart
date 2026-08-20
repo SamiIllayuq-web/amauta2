@@ -57,9 +57,27 @@ class UserRepository extends BaseRepository {
 
   // ==========================================================
   // SELECT
+  // Busca un usuario por ID.
+  // ==========================================================
+
+  Future<User?> getUserById(int id) async {
+    final db = await database;
+    final maps = await db.query(
+      DBConstants.usersTable,
+      where: '${DBConstants.userId} = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+    if (maps.isEmpty) return null;
+    return User.fromMap(maps.first);
+  }
+
+  // ==========================================================
+  // SELECT
   // Busca un usuario por email.
   // ==========================================================
 
+  /// Busca un usuario por email de forma case-insensitive.
   Future<User?> getUserByEmail(String email) async {
 
     final db = await database;
@@ -68,9 +86,37 @@ class UserRepository extends BaseRepository {
 
       DBConstants.usersTable,
 
-      where: '${DBConstants.email} = ?',
+      where: 'LOWER(${DBConstants.email}) = LOWER(?)',
 
       whereArgs: [email],
+
+      limit: 1,
+
+    );
+
+    if (maps.isEmpty) {
+
+      return null;
+
+    }
+
+    return User.fromMap(maps.first);
+
+  }
+
+  /// Busca un usuario por nombre + apellido (case-insensitive).
+  Future<User?> getUserByFullName(String firstName, String lastName) async {
+
+    final db = await database;
+
+    final List<Map<String, dynamic>> maps = await db.query(
+
+      DBConstants.usersTable,
+
+      where:
+          'LOWER(${DBConstants.firstName}) = LOWER(?) AND LOWER(${DBConstants.lastName}) = LOWER(?)',
+
+      whereArgs: [firstName.trim(), lastName.trim()],
 
       limit: 1,
 

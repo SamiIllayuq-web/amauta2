@@ -8,78 +8,78 @@
 
 import '../database/database_constants.dart';
 import '../models/result_model.dart';
+import '../models/result_with_exam_model.dart';
 import 'base_repository.dart';
 
 class ResultRepository extends BaseRepository {
 
   Future<int> createResult(Result result) async {
-
     final db = await database;
-
     return await db.insert(
       DBConstants.resultsTable,
       result.toMap(),
     );
-
   }
 
   Future<List<Result>> getAllResults() async {
-
     final db = await database;
-
     final maps = await db.query(DBConstants.resultsTable);
-
     return maps
         .map((e) => Result.fromMap(e))
         .toList();
-
   }
 
   // ==========================================================
-// Obtiene todos los resultados de un usuario.
-// ==========================================================
+  // Obtiene todos los resultados de un usuario.
+  // ==========================================================
 
-Future<List<Result>> getResultsByUser(
-  int userId,
-) async {
+  Future<List<Result>> getResultsByUser(int userId) async {
+    final db = await database;
+    final maps = await db.query(
+      DBConstants.resultsTable,
+      where: '${DBConstants.userIdFk} = ?',
+      whereArgs: [userId],
+      orderBy: '${DBConstants.completedAt} DESC',
+    );
+    return maps
+        .map((e) => Result.fromMap(e))
+        .toList();
+  }
 
-  final db = await database;
+  // ==========================================================
+  // Obtiene resultados de un usuario con el título del examen (JOIN).
+  // ==========================================================
 
-  final maps = await db.query(
+  Future<List<ResultWithExam>> getResultsByUserWithExam(int userId) async {
+    final db = await database;
+    final maps = await db.rawQuery('''
+      SELECT
+        r.${DBConstants.resultId},
+        r.${DBConstants.userIdFk},
+        r.${DBConstants.mockExamIdFk},
+        m.${DBConstants.mockExamTitle},
+        r.${DBConstants.finalScore},
+        r.${DBConstants.correctAnswers},
+        r.${DBConstants.incorrectAnswers},
+        r.${DBConstants.elapsedTime},
+        r.${DBConstants.completedAt}
+      FROM ${DBConstants.resultsTable} r
+      INNER JOIN ${DBConstants.mockExamsTable} m
+        ON r.${DBConstants.mockExamIdFk} = m.${DBConstants.mockExamId}
+      WHERE r.${DBConstants.userIdFk} = ?
+      ORDER BY r.${DBConstants.completedAt} DESC
+    ''', [userId]);
 
-    DBConstants.resultsTable,
-
-    where: '${DBConstants.userIdFk} = ?',
-
-    whereArgs: [userId],
-
-    orderBy: '${DBConstants.completedAt} DESC',
-
-  );
-
-  return maps
-
-      .map((e) => Result.fromMap(e))
-
-      .toList();
-
-}
-
+    return maps.map((e) => ResultWithExam.fromMap(e)).toList();
+  }
 
   Future<int> deleteResult(int id) async {
-
     final db = await database;
-
     return await db.delete(
-
       DBConstants.resultsTable,
-
-      where: '${DBConstants.resultId}=?',
-
+      where: '${DBConstants.resultId} = ?',
       whereArgs: [id],
-
     );
-
   }
 
   // ==========================================================

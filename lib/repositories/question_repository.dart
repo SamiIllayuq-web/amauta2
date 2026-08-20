@@ -54,12 +54,63 @@ class QuestionRepository extends BaseRepository {
     );
 
     return maps
+
         .map((e) => Question.fromMap(e))
+
         .toList();
 
   }
 
-  // UPDATE
+  // Preguntas que aun no han sido analizadas con IA.
+  // Retorna solo las que no tienen correct_alternative_id.
+  Future<List<Question>> getQuestionsWithoutAnalysis() async {
+
+    final db = await database;
+
+    final maps = await db.query(
+
+      DBConstants.questionsTable,
+
+      where: '${DBConstants.correctAlternativeId} IS NULL',
+
+    );
+
+    return maps
+
+        .map((e) => Question.fromMap(e))
+
+        .toList();
+
+  }
+
+  // Actualiza una pregunta con el resultado del analisis de IA.
+  Future<int> updateQuestionAnalysis(
+      int questionId,
+      int correctAlternativeId,
+      String aiExplanation,
+      ) async {
+
+    final db = await database;
+
+    return await db.update(
+
+      DBConstants.questionsTable,
+
+      {
+
+        DBConstants.correctAlternativeId: correctAlternativeId,
+
+        DBConstants.aiExplanation: aiExplanation,
+
+      },
+
+      where: '${DBConstants.questionId}=?',
+
+      whereArgs: [questionId],
+
+    );
+
+  }
   Future<int> updateQuestion(
       Question question) async {
 
