@@ -248,7 +248,7 @@ class _AIReviewScreenState extends State<AIReviewScreen> {
   }
 
   Widget _buildQuestionCard(int index, _PreguntaConRespuesta data) {
-    final letters = ['A', 'B', 'C', 'D'];
+    final letters = ['A', 'B', 'C', 'D', 'E'];
     final selectedLetter = letters.indexWhere(
       (l) => data.alternatives.indexOf(data.selectedAlternative) == letters.indexOf(l),
     );
@@ -406,7 +406,7 @@ class _QuestionDetailScreenState extends State<_QuestionDetailScreen> {
     setState(() => _analyzing = true);
 
     try {
-      final letters = ['A', 'B', 'C', 'D'];
+      final letters = ['A', 'B', 'C', 'D', 'E'];
       final Map<String, String> altMap = {};
       for (var i = 0; i < widget.data.alternatives.length; i++) {
         altMap[letters[i]] = widget.data.alternatives[i].alternativeText;
@@ -444,7 +444,7 @@ class _QuestionDetailScreenState extends State<_QuestionDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final letters = ['A', 'B', 'C', 'D'];
+    final letters = ['A', 'B', 'C', 'D', 'E'];
 
     return Scaffold(
       appBar: AppBar(
