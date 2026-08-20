@@ -38,20 +38,35 @@ import 'theme/app_theme.dart';
 // ==========================================================
 
 Future<void> main() async {
-  // Carga variables de entorno desde .env (API keys, etc.)
-  await dotenv.load(fileName: ".env");
-
   // Permite ejecutar codigo asincrono antes de iniciar Flutter.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Carga variables de entorno desde .env (API keys, etc.)
+  // isOptional:true para que no lance si el archivo no existe o está vacío.
+  try {
+    await dotenv.load(fileName: ".env", isOptional: true);
+    print("[MAIN] .env loaded OK: ${dotenv.isInitialized}");
+  } catch (e) {
+    print("[MAIN] .env error: \$e — continuing without it");
+  }
 
   // Inicializa la base de datos SQLite.
   print("[MAIN] PASO 1 - DatabaseHelper...");
   try {
     final db = await DatabaseHelper.instance.database;
     print("[MAIN] Database OK: ${db.path}");
-  } catch (e) {
+  } catch (e, stack) {
     print("[MAIN] Database ERROR: $e");
-    rethrow;
+    print("[MAIN] Stack: $stack");
+    // Mostrar pantalla de error en vez de crashear
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text("Error al iniciar base de datos:\n$e"),
+        ),
+      ),
+    ));
+    return;
   }
 
   print("[MAIN] PASO 2 - runApp...");

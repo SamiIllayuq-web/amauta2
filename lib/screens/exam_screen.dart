@@ -201,8 +201,25 @@ class _ExamScreenState extends State<ExamScreen> {
 
     // Si no hay alternativas, algo esta mal en los datos seed.
     // Verificar que las preguntas tengan alternativas en la BD.
-    assert(alternatives.isNotEmpty,
-        'Pregunta $currentQuestion (id=$qId) no tiene alternativas');
+    // Si no hay alternativas, mostrar error y saltar a la siguiente
+    if (alternatives.isEmpty) {
+      debugPrint('Pregunta $currentQuestion (id=$qId) no tiene alternativas');
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        await loadAlternatives();
+        if (!mounted) return;
+        setState(() {});
+      } else {
+        // Fin del examen sin alternativas en esta pregunta
+        if (!mounted) return;
+        Navigator.pushNamed(context, '/result', arguments: {
+          "resultId": resultId,
+          "mockExamId": mockExamId,
+          "elapsedTime": elapsedSeconds,
+        });
+      }
+      return;
+    }
 
   }
 

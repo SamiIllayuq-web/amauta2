@@ -602,15 +602,15 @@ static Future<void> _insertAlternatives(Database database) async {
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 2, DBConstants.alternativeText: 'E) -18', DBConstants.isCorrect: 0});
 
-  // — P3: Señora presta S/. 6000 al 2,5% mensual, 8 meses —
+  // — P3: Señora presta S/. 6000 al 2,5% mensual, 8 meses — (key=4 → D)
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 3, DBConstants.alternativeText: 'A) S/. 8200', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 3, DBConstants.alternativeText: 'B) S/. 7200', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
-    DBConstants.questionIdFk: 3, DBConstants.alternativeText: 'C) S/. 7200', DBConstants.isCorrect: 1});
+    DBConstants.questionIdFk: 3, DBConstants.alternativeText: 'C) S/. 7200', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
-    DBConstants.questionIdFk: 3, DBConstants.alternativeText: 'D) S/. 6200', DBConstants.isCorrect: 0});
+    DBConstants.questionIdFk: 3, DBConstants.alternativeText: 'D) S/. 6200', DBConstants.isCorrect: 1});
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 3, DBConstants.alternativeText: 'E) S/. 8600', DBConstants.isCorrect: 0});
 
@@ -626,11 +626,11 @@ static Future<void> _insertAlternatives(Database database) async {
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 4, DBConstants.alternativeText: 'E) S/. 32', DBConstants.isCorrect: 0});
 
-  // — P5: Edades de Alberto y Carlos —
+  // — P5: Edades de Alberto y Carlos — (key=1 → A)
   await database.insert(DBConstants.alternativesTable, {
-    DBConstants.questionIdFk: 5, DBConstants.alternativeText: 'A) 13', DBConstants.isCorrect: 0});
+    DBConstants.questionIdFk: 5, DBConstants.alternativeText: 'A) 13', DBConstants.isCorrect: 1});
   await database.insert(DBConstants.alternativesTable, {
-    DBConstants.questionIdFk: 5, DBConstants.alternativeText: 'B) 14', DBConstants.isCorrect: 1});
+    DBConstants.questionIdFk: 5, DBConstants.alternativeText: 'B) 14', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 5, DBConstants.alternativeText: 'C) 15', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
@@ -650,7 +650,7 @@ static Future<void> _insertAlternatives(Database database) async {
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 6, DBConstants.alternativeText: 'E) Perdió S/. 10', DBConstants.isCorrect: 1});
 
-  // — P7: Número de estudiantes del salón —
+  // — P7: Número de estudiantes del salón — (key=2 → B=27)
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 7, DBConstants.alternativeText: 'A) 26', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
@@ -662,29 +662,29 @@ static Future<void> _insertAlternatives(Database database) async {
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 7, DBConstants.alternativeText: 'E) 30', DBConstants.isCorrect: 0});
 
-  // — P8: Altura del poste con sombra —
+  // — P8: Altura del poste con sombra — (D es la oficial según key=4)
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 8, DBConstants.alternativeText: 'A) 5 m', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 8, DBConstants.alternativeText: 'B) 6 m', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
-    DBConstants.questionIdFk: 8, DBConstants.alternativeText: 'C) 7 m', DBConstants.isCorrect: 1});
+    DBConstants.questionIdFk: 8, DBConstants.alternativeText: 'C) 7 m', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 8, DBConstants.alternativeText: 'D) 7 m', DBConstants.isCorrect: 1});
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 8, DBConstants.alternativeText: 'E) 8 m', DBConstants.isCorrect: 0});
 
-  // — P9: Complemento y suplemento del ángulo —
+  // — P9: Complemento y suplemento del ángulo — (key=5 → E)
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 9, DBConstants.alternativeText: 'A) 30°', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
-    DBConstants.questionIdFk: 9, DBConstants.alternativeText: 'B) 20°', DBConstants.isCorrect: 1});
+    DBConstants.questionIdFk: 9, DBConstants.alternativeText: 'B) 20°', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 9, DBConstants.alternativeText: 'C) 40°', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 9, DBConstants.alternativeText: 'D) 25°', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
-    DBConstants.questionIdFk: 9, DBConstants.alternativeText: 'E) 32°', DBConstants.isCorrect: 0});
+    DBConstants.questionIdFk: 9, DBConstants.alternativeText: 'E) 32°', DBConstants.isCorrect: 1});
 
   // — P10: Perímetro del triángulo ABX —
   await database.insert(DBConstants.alternativesTable, {
@@ -854,7 +854,7 @@ static Future<void> _insertAlternatives(Database database) async {
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 23, DBConstants.alternativeText: 'E) Las provincias', DBConstants.isCorrect: 0});
 
-  // — P24: Proceso de utilizar recursos para producir capital nuevo —
+  // — P24: Proceso de utilizar recursos para producir capital nuevo — (key=5 → E)
   await database.insert(DBConstants.alternativesTable, {
     DBConstants.questionIdFk: 24, DBConstants.alternativeText: 'A) Circulación', DBConstants.isCorrect: 0});
   await database.insert(DBConstants.alternativesTable, {
